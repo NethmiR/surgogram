@@ -48,7 +48,7 @@ exports.createUser = async (userData) => {
         await sendEmailVerification(userCredential.user);
 
         // Saving the user
-        const newUser = await User.create({ email, fullName, userName, URL: imageUrl });
+        const newUser = await User.create({ email, fullName, userName, profileUrl: imageUrl });
 
         await transaction.commit();
         return newUser;
@@ -64,4 +64,10 @@ exports.createUser = async (userData) => {
             throw new Error(error.message || "An error occurred while creating the user");
         }
     }
+};
+
+// use for the external services
+exports.userExists = async (userId) => {
+    const user = await User.findByPk(userId);
+    return !!user;
 };
