@@ -23,9 +23,14 @@ const UserGallery = sequelize.define('UserGallery', {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
+    createdAt: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+    },
 }, {
     indexes: [
-        { fields: ['userId'] },
+        { fields: ['noOfLikes'] },
+        { fields: ['createdAt'] },
     ],
 });
 
