@@ -1,5 +1,5 @@
-const { Post } = require('../models');
-const { uploadImage } = require('../storageService');
+const { Post } = require('../models/Post');
+const { uploadImage } = require('./storageService');
 const { userExists } = require('./userService');
 
 async function getAllPosts(page = 1, pageSize = 10) {
@@ -44,12 +44,12 @@ exports.getAllPosts = async (page, pageSize) => {
     }
 };
 
-exports.createPost = async (postData) => {
+exports.createPost = async (postData, imageFile) => {
     const transaction = await Post.sequelize.transaction();
     try {
         await validatePostData(postData);
 
-        const { imageFile, description, location, userId } = postData;
+        const { description, location, userId } = postData;
 
         // Getting the image URL
         let imageUrl = null;

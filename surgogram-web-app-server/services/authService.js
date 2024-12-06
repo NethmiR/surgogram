@@ -1,5 +1,5 @@
-const { User } = require('../models');
-const { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, confirmPasswordReset } = require('../../firebase');
+const { User } = require('../models/User');
+const { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, confirmPasswordReset } = require('./../firebase');
 const jwt = require('jsonwebtoken');
 
 exports.login = async (email, password) => {

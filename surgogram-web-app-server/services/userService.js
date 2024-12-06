@@ -1,48 +1,39 @@
 const { User } = require('../models/User');
-const { uploadImage } = require('../storageService');
+const { uploadImage } = require('./storageService');
 const {
     getAuth,
     createUserWithEmailAndPassword,
     sendEmailVerification,
-} = require('../../firebase');
+} = require('./../firebase');
 
 function validateUserData(userData) {
-    const { email, password, fullName, userName } = userData;
-    if (!email || !password || !fullName || !userName) {
+    const { email, password } = userData;
+    if (!email || !password) {
         if (!email) {
             throw new Error('Email is required');
         }
         if (!password) {
             throw new Error('Password is required');
         }
-        if (!fullName) {
-            throw new Error('Full name is required');
-        }
-        if (!userName) {
-            throw new Error('Username is required');
-        }
     }
 }
 
 exports.createUser = async (userData) => {
-    const transaction = await User.sequelize.transaction();
     try {
         validateUserData(userData);
 
-        const { email, password, fullName, userName } = userData;
+        const { email, password } = userData;
 
         // Creating user with Firebase
         const userCredential = await createUserWithEmailAndPassword(getAuth(), email, password);
         await sendEmailVerification(userCredential.user);
 
         // Saving the user
-        const newUser = await User.create({ email, fullName, userName });
+        const newUser = await User.create({ email });
 
-        await transaction.commit();
         return newUser;
 
     } catch (error) {
-        await transaction.rollback();
 
         if (error.code === 'auth/email-already-in-use') {
             throw new Error('Email is already in use');
@@ -67,7 +58,7 @@ exports.updateUser = async (userId, userData) => {
         // Getting the image URL
         let imageUrl = null;
         if (imageFile) {
-            imageUrl = await uploadImage('surgogram-profile-bucket', imageFile);
+            imageUrl = await uploadImage('surgogram-profile-bucket', imageFile.buffer);
         }
 
         // Updating the changed fields

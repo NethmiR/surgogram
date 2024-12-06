@@ -1,12 +1,16 @@
 const postService = require('../services/postService');
 const { authenticateUser } = require('../middleware/authMiddleware');
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
 
 exports.createPost = [
     authenticateUser,
+    upload.single('imageFile'),
     async (req, res) => {
         try {
             const postData = req.body;
-            const newPost = await postService.createPost(postData);
+            const imageFile = req.file;
+            const newPost = await postService.createPost(postData, imageFile);
             res.status(201).json(newPost);
         } catch (error) {
             res.status(400).json({ error: error.message });

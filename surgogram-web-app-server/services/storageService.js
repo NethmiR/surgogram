@@ -1,7 +1,7 @@
-import { supabase } from './superbase';
-import { v4 as uuidv4 } from 'uuid';
-import path from 'path';
-import sequelize from './sequelize';
+const { supabase } = require('../superbase');
+const { v4: uuidv4 } = require('uuid');
+const path = require('path');
+const sequelize = require('../sequelize');
 require('dotenv').config();
 
 const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png'];
@@ -44,4 +44,4 @@ async function uploadImage(bucketName, file) {
 //     });
 // }
 
-export { uploadImage };
+module.exports = { uploadImage };
