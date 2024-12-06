@@ -1,4 +1,4 @@
-const { User } = require('../models/User');
+const User = require('../models/User');
 const { uploadImage } = require('./storageService');
 const {
     getAuth,
@@ -58,7 +58,10 @@ exports.updateUser = async (userId, userData) => {
         // Getting the image URL
         let imageUrl = null;
         if (imageFile) {
-            imageUrl = await uploadImage('surgogram-profile-bucket', imageFile.buffer);
+            console.log('File uploaded:', imageFile);
+            imageUrl = await uploadImage('surgogram-profile-bucket', imageFile);
+        } else {
+            console.log('No file uploaded');
         }
 
         // Updating the changed fields
@@ -76,8 +79,18 @@ exports.updateUser = async (userId, userData) => {
     }
 };
 
+exports.getUserById = async (userId) => {
+    try {
+        const user = await User.findByPk(userId);
+        return user;
+    } catch (error) {
+        throw new Error(error.message || "An error occurred while fetching the user");
+    }
+};
+
 // use for the external services
 exports.userExists = async (userId) => {
     const user = await User.findByPk(userId);
     return !!user;
 };
+

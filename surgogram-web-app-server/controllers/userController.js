@@ -22,6 +22,8 @@ exports.updateUser = [
             const userData = req.body;
             if (req.file) {
                 userData.imageFile = req.file;
+            } else {
+                return res.status(400).json({ error: 'Image is required' });
             }
             const updatedUser = await userService.updateUser(userId, userData);
             res.status(200).json(updatedUser);
@@ -30,4 +32,17 @@ exports.updateUser = [
         }
     }
 ];
+
+exports.getUserById = async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const user = await userService.getUserById(userId);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
 
