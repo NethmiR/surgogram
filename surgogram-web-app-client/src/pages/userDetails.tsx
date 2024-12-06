@@ -25,7 +25,8 @@ const UserDetails: React.FC = () => {
 
     React.useEffect(() => {
         if (!user || !user.id) {
-            router.push("/signup");
+            toast.error("User ID not found");
+            router.push("/signUp");
         }
     }, [user, router]);
 
@@ -49,9 +50,7 @@ const UserDetails: React.FC = () => {
                 const updatedUser = await updateUser(userData, user.id);
                 setUser(updatedUser);
                 toast.success("User updated successfully");
-                router.push("/homeScreen");
-            } else {
-                toast.error("User ID not found");
+                router.push("/signIn");
             }
         } catch (error) {
             toast.error("Failed to update user");
