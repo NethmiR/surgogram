@@ -5,7 +5,7 @@ export interface CreatePostInterface {
     userId: number;
 }
 
-export interface Post {
+export interface PostInterface {
     id: number;
     URL: string;
     description: string;
