@@ -6,6 +6,8 @@ import Spinner from "@/components/Spinner";
 import Toast from "@/components/Toast";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
+import { createUser } from "@/services/userService";
+import { CreateUserInterface, UserInterface } from "@/interfaces/userInterface";
 
 const SignUp: React.FC = () => {
     const [loading, setLoading] = useState(false);
@@ -17,19 +19,44 @@ const SignUp: React.FC = () => {
     const router = useRouter();
 
     useEffect(() => {
-        // Remove token
+        // Reset token whenever user visits 
+        localStorage.removeItem("token");
     }, []);
 
     const handleSignUp = async () => {
         // Validate inputs
+        if (password !== confirmPassword) {
+            toast.error("Passwords do not match", { className: "bg-red-500 text-white" });
+            setPassword("");
+            setConfirmPassword("");
+            return;
+        }
+
+        const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/;
+        if (!emailRegex.test(email)) {
+            toast.error("Enter a valid email", { className: "bg-red-500 text-white" });
+            setEmail("");
+            return;
+        }
+
+        if (!email || !password || !confirmPassword) {
+            toast.error("Please fill all the fields", { className: "bg-red-500 text-white" });
+            return;
+        }
 
         setLoading(true);
 
-        // call authentication service functions
+        const userData: CreateUserInterface = { email, password };
 
-        // Show toasts if unsuccessful
-
-        // Navigate to posts page if successful
+        try {
+            const user: UserInterface = await createUser(userData);
+            toast.success("Sign up successful");
+            router.push("/userDetails");
+        } catch (error) {
+            toast.error((error as Error).message);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -81,7 +108,7 @@ const SignUp: React.FC = () => {
 
                     <div className="flex flex-col items-center justify-center mt-4">
                         <Button caption="SIGN UP" onClick={handleSignUp} width="w-full" background="bg-red-500" />
-                        <Link href="/admin/auth/forgotpassword">
+                        <Link href="/signIn">
                             <div className="mb-4 mt-2 text-white text-sm hover:text-red duration-300 transition-all ease-in-out cursor-pointer">
                                 Already have an account? Sign In
                             </div>
