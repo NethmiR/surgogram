@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import Image from "next/image";
 import DialogContent from "@/components/DialogContent";
 import DialogLayout from "@/components/DialogLayout";
-import { CiHeart } from "react-icons/ci";
 import { FaHeart } from "react-icons/fa";
+import { FaRegHeart } from "react-icons/fa";
 
 type Post = {
     id: number;
@@ -20,7 +20,7 @@ const posts: Post[] = [
         id: 1,
         username: "john_doe",
         university: "University of Montclair",
-        image: "/img/post1.jpg",
+        image: "/img/photo1.jpg",
         likes: 350,
         content: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
         timestamp: "2024-12-06 10:20",
@@ -29,7 +29,7 @@ const posts: Post[] = [
         id: 2,
         username: "john_doe",
         university: "University of Montclair",
-        image: "/img/post2.jpg",
+        image: "/img/photo1.jpg",
         likes: 350,
         content: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
         timestamp: "2024-12-06 10:20",
@@ -38,7 +38,7 @@ const posts: Post[] = [
         id: 3,
         username: "john_doe",
         university: "University of Montclair",
-        image: "/img/post3.jpg",
+        image: "/img/photo1.jpg",
         likes: 350,
         content: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
         timestamp: "2024-12-06 10:20",
@@ -106,7 +106,7 @@ const HomeScreen: React.FC = () => {
                                 {likedPosts.includes(post.id) ? (
                                     <FaHeart className="text-red-500" />
                                 ) : (
-                                    <CiHeart />
+                                    <FaRegHeart />
                                 )}
                                 <span>{post.likes}</span>
                             </div>
