@@ -1,13 +1,10 @@
-const { User } = require('../models');
+const { User } = require('../models/User');
 const { uploadImage } = require('../storageService');
 const {
     getAuth,
     createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    signOut,
     sendEmailVerification,
-    sendPasswordResetEmail
-} = require('../config/firebase');
+} = require('../../firebase');
 
 function validateUserData(userData) {
     const { email, password, fullName, userName } = userData;

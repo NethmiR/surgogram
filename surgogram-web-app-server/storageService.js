@@ -2,6 +2,7 @@ import { supabase } from './superbase';
 import { v4 as uuidv4 } from 'uuid';
 import path from 'path';
 import sequelize from './sequelize';
+require('dotenv').config();
 
 const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png'];
 
