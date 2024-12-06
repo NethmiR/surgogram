@@ -8,15 +8,17 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 import { createUser } from "@/services/userService";
 import { CreateUserInterface, UserInterface } from "@/interfaces/userInterface";
+import { useUser } from "@/context/userContext";
 
 const SignUp: React.FC = () => {
     const [loading, setLoading] = useState(false);
 
-    const [email, setEmail] = useState("rathnayakenethmiit@gmail.com");
-    const [password, setPassword] = useState("NethmiR123");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
     const router = useRouter();
+    const { setUser } = useUser();
 
     useEffect(() => {
         // Reset token whenever user visits 
@@ -50,6 +52,7 @@ const SignUp: React.FC = () => {
 
         try {
             const user: UserInterface = await createUser(userData);
+            setUser(user); // Set the user context
             toast.success("Sign up successful");
             router.push("/userDetails");
         } catch (error) {
