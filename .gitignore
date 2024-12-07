@@ -132,5 +132,8 @@ dist
 # package-locj.json
 package-lock.json
 
+#uploads
+uploads
+
 
 
