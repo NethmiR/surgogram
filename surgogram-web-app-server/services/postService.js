@@ -1,5 +1,5 @@
 const Post = require('../models/Post');
-const User = require('../models/User'); 
+const User = require('../models/User');
 const { uploadImage } = require('./storageService');
 const { userExists } = require('./userService');
 
@@ -46,8 +46,13 @@ async function validatePostData(postData, imageFile) {
 exports.createPost = async (postData, imageFile) => {
     try {
         await validatePostData(postData, imageFile);
-      
+
         const { description, location, userId } = postData;
+
+        const user = await User.findByPk(userId);
+        if (!user) {
+            throw new Error('User not found');
+        }
 
         // Getting the image URL
         let imageUrl = null;
@@ -61,7 +66,6 @@ exports.createPost = async (postData, imageFile) => {
         return newPost;
 
     } catch (error) {
-
         throw new Error(error.message || 'An error occurred while creating the post');
     }
 }

@@ -13,7 +13,8 @@ exports.createPost = [
             const newPost = await postService.createPost(postData, imageFile);
             res.status(201).json(newPost);
         } catch (error) {
-            res.status(400).json({ error: error.message });
+            console.error(error);
+            res.status(400).json({ error: error.message || 'An error occurred while creating the post' });
         }
     }
 ];
@@ -26,7 +27,8 @@ exports.getAllPosts = [
             const posts = await postService.getAllPosts(page, pageSize);
             res.status(200).json(posts);
         } catch (error) {
-            res.status(400).json({ error: error.message });
+            console.error(error);
+            res.status(400).json({ error: error.message || 'An error occurred while fetching posts' });
         }
     }
 ];
@@ -39,7 +41,8 @@ exports.patchPost = [
             const updatedPost = await postService.patchPost(postId);
             res.status(200).json(updatedPost);
         } catch (error) {
-            res.status(400).json({ error: error.message });
+            console.error(error);
+            res.status(400).json({ error: error.message || 'An error occurred while updating the post' });
         }
     }
 ];
