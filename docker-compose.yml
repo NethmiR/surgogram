@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  web-app-client:
+    build: ./surgogram-web-app-client
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./surgogram-web-app-client/.env.local
+    volumes:
+      - ./surgogram-web-app-client:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - web-app-server
+
+  web-app-server:
+    build: ./surgogram-web-app-server
+    ports:
+      - "3001:3001"
+    env_file:
+      - ./surgogram-web-app-server/.env
+    volumes:
+      - ./surgogram-web-app-server:/usr/src/app
+      - /usr/src/app/node_modules
