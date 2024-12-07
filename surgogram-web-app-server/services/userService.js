@@ -21,7 +21,6 @@ function validateUserData(userData) {
 exports.createUser = async (userData) => {
     try {
         validateUserData(userData);
-
         const { email, password } = userData;
 
         // Creating user with Firebase

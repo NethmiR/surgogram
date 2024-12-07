@@ -23,13 +23,6 @@ const UserDetails: React.FC = () => {
 
     const router = useRouter();
 
-    React.useEffect(() => {
-        if (!user || !user.id) {
-            toast.error("User ID not found");
-            router.push("/signUp");
-        }
-    }, [user, router]);
-
     const handleGoAhead = async () => {
         // Validate inputs
         if (!userName || !file || !fullName) {
@@ -46,11 +39,13 @@ const UserDetails: React.FC = () => {
         };
 
         try {
+            console.log("outisde condition", user);
             if (user && user.id) {
+                console.log("userData", userData);
                 const updatedUser = await updateUser(userData, user.id);
                 setUser(updatedUser);
                 toast.success("User updated successfully");
-                router.push("/signIn");
+                router.push("/homeScreen");
             }
         } catch (error) {
             toast.error("Failed to update user");

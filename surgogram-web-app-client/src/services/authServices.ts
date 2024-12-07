@@ -1,7 +1,7 @@
 import axios from "axios";
 import { LoginResponseInterface } from "@/interfaces/userInterface";
 
-const BASE_URL = process.env.VUE_APP_API_BASE_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export const loginUser = async (
     email: string,

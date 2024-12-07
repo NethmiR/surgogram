@@ -1,7 +1,7 @@
 import axiosInstance from "@/utils/axiosInstance";
 import { CreatePostInterface, PostInterface, GetAllPostsPaginatedInterface } from "@/interfaces/postInterfaces";
 
-const BASE_URL = process.env.VUE_APP_API_BASE_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export const createPost = async (
     postData: CreatePostInterface

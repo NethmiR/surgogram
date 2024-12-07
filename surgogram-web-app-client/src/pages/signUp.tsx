@@ -54,9 +54,9 @@ const SignUp: React.FC = () => {
             const user: UserInterface = await createUser(userData);
             setUser(user); // Set the user context
             toast.success("Sign up successful");
-            router.push("/userDetails");
+            router.push("/signIn");
         } catch (error) {
-            toast.error((error as Error).message);
+            toast.error("Somthing went wrong passowrd should be at leat 6 characters long");
         } finally {
             setLoading(false);
         }
@@ -110,7 +110,7 @@ const SignUp: React.FC = () => {
                     />
 
                     <div className="flex flex-col items-center justify-center mt-4">
-                        <Button caption="SIGN UP" onClick={handleSignUp} width="w-full" background="bg-red-500" />
+                        <Button caption="SIGN UP" onClick={() => { handleSignUp() }} width="w-full" background="bg-red-500" />
                         <Link href="/signIn">
                             <div className="mb-4 mt-2 text-white text-sm hover:text-red duration-300 transition-all ease-in-out cursor-pointer">
                                 Already have an account? Sign In

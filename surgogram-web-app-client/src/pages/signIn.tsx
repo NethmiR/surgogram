@@ -15,21 +15,21 @@ const Signin: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const { user, setUser } = useUser();
 
-    const [email, setEmail] = useState("rathnayakenethmiit@gmail.com");
-    const [password, setPassword] = useState("NethmiR123");
+    const [email, setEmail] = useState("rathnayakenethmi3@gmail.com");
+    const [password, setPassword] = useState("12345678");
 
     const router = useRouter();
 
-    //if already logged in then gets direct to home screen
-    React.useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (user && user.id && token && !isTokenExpiredFunction(token)) {
-            router.push("/homeScreen");
-        }
-        if (user && user.email) {
-            setEmail(user.email);
-        }
-    }, [user, router]);
+    // //if already logged in then gets direct to home screen
+    // React.useEffect(() => {
+    //     const token = localStorage.getItem("token");
+    //     if (user && user.id && token && !isTokenExpiredFunction(token)) {
+    //         router.push("/homeScreen");
+    //     }
+    //     if (user && user.email) {
+    //         setEmail(user.email);
+    //     }
+    // }, [user, router]);
 
     useEffect(() => {
         // Remove token whenever user visits 
@@ -57,10 +57,14 @@ const Signin: React.FC = () => {
             localStorage.setItem("token", updatedUser.token);
             setUser(updatedUser.user);
             toast.success("Sign in successful");
-            router.push("/homeScreen");
+            if (updatedUser.user.fullName == null) {
+                router.push("/userDetails");
+            } else {
+                router.push("/homeScreen");
+            }
         }
         catch (error) {
-            toast.error((error as Error).message);
+            toast.error("Something went wrong. Please check whether your email and password are correct");
         }
         finally {
             setLoading(false);
@@ -112,7 +116,7 @@ const Signin: React.FC = () => {
                     </Link>
                     <div className="flex flex-col items-center justify-center mt-4">
                         <Button caption="SIGN IN" onClick={handleSignIn} width="w-full" background="bg-red-500" />
-                        <Link href="/singUp">
+                        <Link href="/signUp">
                             <div className="mb-4 mt-2 text-white text-sm hover:text-red duration-300 transition-all ease-in-out cursor-pointer">
                                 Don't have an account? Sign Up
                             </div>
