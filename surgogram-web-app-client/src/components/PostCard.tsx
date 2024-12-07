@@ -4,15 +4,10 @@ import { GetPostInterface } from "@/interfaces/postInterfaces";
 
 interface PostCardProps {
   post: GetPostInterface;
-  likedPosts: number[];
   toggleLike: (postId: number) => void;
 }
 
-const PostCard: React.FC<PostCardProps> = ({
-  post,
-  likedPosts,
-  toggleLike,
-}) => {
+const PostCard: React.FC<PostCardProps> = ({ post, toggleLike }) => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const yyyy = date.getFullYear();
@@ -48,7 +43,7 @@ const PostCard: React.FC<PostCardProps> = ({
           onClick={() => toggleLike(post.id)}
           className="cursor-pointer flex items-center space-x-1"
         >
-          {likedPosts.includes(post.id) ? (
+          {post.isUserLiked ? (
             <FaHeart className="text-red-500" />
           ) : (
             <FaRegHeart />

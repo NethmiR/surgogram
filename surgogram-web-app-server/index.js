@@ -4,9 +4,7 @@ const cors = require('cors');
 const userRoutes = require('./routes/userRoutes.js');
 const postRoutes = require('./routes/postRoutes.js');
 const authRoutes = require('./routes/authRoutes.js');
-
-const Post = require('./models/Post');
-const User = require('./models/User');
+const { sequelize } = require('./models');
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -21,11 +19,14 @@ app.use('/api/user', userRoutes);
 app.use('/api/post', postRoutes);
 app.use('/api/auth', authRoutes);
 
-User.associate({ Post });
-Post.associate({ User });
+// sequelize.sync({ alter: true }).then(() => {
+//     app.listen(port, () => {
+//         console.log(`Server is running at http://localhost:${port}`);
+//     });
+// }).catch(err => {
+//     console.error('Unable to sync the database:', err);
+// });
 
 app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+    console.log(`Server is running at http://localhost:${port}`);
 });
-
-

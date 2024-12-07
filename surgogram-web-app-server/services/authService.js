@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const { User } = require('./../models');
 const { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, confirmPasswordReset } = require('./../firebase');
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = 'your_jwt_secret';

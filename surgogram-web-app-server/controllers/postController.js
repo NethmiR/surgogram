@@ -23,8 +23,8 @@ exports.getAllPosts = [
     authenticateUser,
     async (req, res) => {
         try {
-            const { page, pageSize } = req.query;
-            const posts = await postService.getAllPosts(page, pageSize);
+            const { page, pageSize, userId } = req.query;
+            const posts = await postService.getAllPosts(userId, page, pageSize);
             res.status(200).json(posts);
         } catch (error) {
             console.error(error);
@@ -38,11 +38,12 @@ exports.patchPost = [
     async (req, res) => {
         try {
             const postId = req.params.id;
-            const updatedPost = await postService.patchPost(postId);
-            res.status(200).json(updatedPost);
+            const userId = req.body.userId;
+            const newLike = await postService.addLike(postId, userId);
+            res.status(200).json(newLike);
         } catch (error) {
             console.error(error);
-            res.status(400).json({ error: error.message || 'An error occurred while updating the post' });
+            res.status(400).json({ error: error.message || 'An error occurred while liking the post' });
         }
     }
 ];

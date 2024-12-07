@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
+import { useRouter } from "next/router";
 import DialogContent from "@/components/DialogContent";
 import DialogLayout from "@/components/DialogLayout";
-import { useUser } from "@/context/userContext";
-import { getAllPosts, createPost } from "@/services/postServices";
+import {
+  getAllPosts,
+  createPost,
+  updatePostLikes,
+} from "@/services/postServices";
 import {
   GetPostInterface,
   CreatePostInterface,
@@ -13,46 +16,67 @@ import { toast } from "react-toastify";
 import PostCard from "@/components/PostCard"; // Import the new PostCard component
 import Toast from "@/components/Toast";
 import Spinner from "@/components/Spinner";
+import { useUser } from "@/context/userContext";
 
 const HomeScreen: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [isDialogVisible, setIsDialogVisible] = useState(false);
-  const [likedPosts, setLikedPosts] = useState<number[]>([]);
   const [posts, setPosts] = useState<GetPostInterface[]>([]);
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        setLoading(true);
-        const fetchedPosts: GetAllPostsPaginatedInterface = await getAllPosts();
-        const postsData = fetchedPosts.posts.map((postData) => postData);
-        setPosts(postsData);
-      } catch (error) {
-        toast.error("Error fetching posts");
-        console.error("Error fetching posts:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const router = useRouter();
 
+  const { user } = useUser();
+  const limit = 10;
+
+  useEffect(() => {
     fetchPosts();
   }, []);
 
-  const toggleLike = (postId: number) => {
-    setLikedPosts((prevLikedPosts) =>
-      prevLikedPosts.includes(postId)
-        ? prevLikedPosts.filter((id) => id !== postId)
-        : [...prevLikedPosts, postId]
-    );
+  const fetchPosts = async () => {
+    try {
+      if (!user) {
+        router.push("/signIn");
+        return;
+      }
+
+      setLoading(true);
+      const fetchedPosts: GetAllPostsPaginatedInterface = await getAllPosts(
+        1,
+        10,
+        user.id
+      );
+      const postsData = fetchedPosts.posts.map((postData) => postData);
+      setPosts(postsData);
+    } catch (error) {
+      toast.error("Error fetching posts");
+      console.error("Error fetching posts:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const toggleLike = async (postId: number) => {
+    try {
+      if (!user) {
+        router.push("/signIn");
+        return;
+      }
+      setLoading(true);
+      await updatePostLikes(postId, user.id);
+      fetchPosts();
+    } catch (error) {
+      toast.error("Error updating likes");
+      console.error("Error updating likes:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleCreatePost = async (postData: CreatePostInterface) => {
     try {
       setLoading(true);
       await createPost(postData);
-      const fetchedPosts: GetAllPostsPaginatedInterface = await getAllPosts();
-      const postsData = fetchedPosts.posts.map((postData) => postData);
-      setPosts(postsData);
+      fetchPosts();
     } catch (error) {
       console.error("Error creating post:", error);
       toast.error("Error creating post");
@@ -84,12 +108,7 @@ const HomeScreen: React.FC = () => {
       {/* Posts Section */}
       <div className="relative z-10 mt-6 w-full sm:w-[600px] flex flex-col items-center space-y-6 px-4 sm:px-0 overflow-y-scroll max-h-[calc(100vh-100px)]">
         {posts.map((post) => (
-          <PostCard
-            key={post.id}
-            post={post}
-            likedPosts={likedPosts}
-            toggleLike={toggleLike}
-          />
+          <PostCard key={post.id} post={post} toggleLike={toggleLike} />
         ))}
       </div>
 

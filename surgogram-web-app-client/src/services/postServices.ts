@@ -28,9 +28,19 @@ export const createPost = async (
   }
 };
 
-export const getAllPosts = async (): Promise<GetAllPostsPaginatedInterface> => {
+export const getAllPosts = async (
+  page: number,
+  limit: number,
+  userId: number
+): Promise<GetAllPostsPaginatedInterface> => {
   try {
-    const response = await axiosInstance.get(`${BASE_URL}/post/`);
+    const response = await axiosInstance.get(`${BASE_URL}/post/`, {
+      params: {
+        page,
+        limit,
+        userId,
+      },
+    });
     return response.data;
   } catch (error) {
     throw error;
@@ -38,10 +48,13 @@ export const getAllPosts = async (): Promise<GetAllPostsPaginatedInterface> => {
 };
 
 export const updatePostLikes = async (
-  postId: number
+  postId: number,
+  userId: number
 ): Promise<PostInterface> => {
   try {
-    const response = await axiosInstance.put(`${BASE_URL}/post/${postId}`);
+    const response = await axiosInstance.patch(`${BASE_URL}/post/${postId}`, {
+      userId,
+    });
     return response.data;
   } catch (error) {
     throw error;
