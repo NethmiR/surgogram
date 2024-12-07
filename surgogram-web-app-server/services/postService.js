@@ -1,4 +1,5 @@
 const Post = require('../models/Post');
+const User = require('../models/User'); // Add this line to import the User model
 const { uploadImage } = require('./storageService');
 const { userExists } = require('./userService');
 
@@ -11,7 +12,8 @@ exports.getAllPosts = async (page = 1, pageSize = 10) => {
                 ['createdAt', 'DESC']
             ],
             limit: pageSize,
-            offset: offset
+            offset: offset,
+            include: [{ model: User, as: 'user' }] // Include the user relation
         });
         return { totalPosts: count, posts: rows };
     } catch (error) {
