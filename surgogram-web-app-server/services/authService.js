@@ -32,6 +32,11 @@ exports.login = async (email, password) => {
 
 exports.sendPasswordReset = async (email) => {
     try {
+        const user = await User.findOne({ where: { email } });
+        if (!user) {
+            throw new Error('User not found');
+        }
+
         const auth = getAuth();
         await sendPasswordResetEmail(auth, email);
         return { message: 'Password reset email sent.' };

@@ -81,6 +81,10 @@ exports.updateUser = async (userId, userData) => {
 exports.getUserById = async (userId) => {
     try {
         const user = await User.findByPk(userId);
+
+        if (!user) {
+            throw new Error('User not found');
+        }
         return user;
     } catch (error) {
         throw new Error(error.message || "An error occurred while fetching the user");

@@ -10,7 +10,11 @@ exports.createUser = async (req, res) => {
         res.status(201).json(newUser);
     } catch (error) {
         console.log(error);
-        res.status(400).json({ error: error.message });
+        if (error.message === 'Email is already in use' || error.message === 'Invalid email address') {
+            res.status(400).json({ error: error.message });
+        } else {
+            res.status(500).json({ error: 'An error occurred while creating the user' });
+        }
     }
 };
 
@@ -30,7 +34,11 @@ exports.updateUser = [
             res.status(200).json(updatedUser);
         } catch (error) {
             console.log(error);
-            res.status(400).json({ error: error.message });
+            if (error.message === 'User not found') {
+                res.status(404).json({ error: error.message });
+            } else {
+                res.status(500).json({ error: 'An error occurred while updating the user' });
+            }
         }
     }
 ];
@@ -44,7 +52,11 @@ exports.getUserById = async (req, res) => {
         }
         res.status(200).json(user);
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        if (error.message === 'User not found') {
+            res.status(404).json({ error: error.message });
+        } else {
+            res.status(500).json({ error: 'An error occurred while fetching the user' });
+        }
     }
 };
 

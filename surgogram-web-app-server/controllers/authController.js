@@ -6,7 +6,11 @@ exports.login = async (req, res) => {
         const result = await authService.login(email, password);
         res.status(200).json(result);
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        if (error.message === 'Email not found' || error.message === 'Incorrect password' || error.message === 'Email not verified') {
+            res.status(401).json({ error: error.message });
+        } else {
+            res.status(400).json({ error: error.message });
+        }
     }
 };
 
@@ -16,7 +20,11 @@ exports.sendPasswordReset = async (req, res) => {
         const result = await authService.sendPasswordReset(email);
         res.status(200).json(result);
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        if (error.message === 'User not found') {
+            res.status(404).json({ error: error.message });
+        } else {
+            res.status(400).json({ error: error.message });
+        }
     }
 };
 
