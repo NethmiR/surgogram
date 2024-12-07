@@ -40,7 +40,7 @@ exports.getAllPosts = async (page, pageSize) => {
     try {
         return await getAllPosts(page, pageSize);
     } catch (error) {
-        throw new Error(error.message || 'An error occurred while fetching user gallery');
+        throw new Error(error.message || 'An error occurred while fetching posts');
     }
 };
 

@@ -1,53 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Image from "next/image";
 import DialogContent from "@/components/DialogContent";
 import DialogLayout from "@/components/DialogLayout";
 import { FaHeart } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa";
-
-type Post = {
-    id: number;
-    username: string;
-    university: string;
-    image: string;
-    likes: number;
-    content: string;
-    timestamp: string;
-};
-
-const posts: Post[] = [
-    {
-        id: 1,
-        username: "john_doe",
-        university: "University of Montclair",
-        image: "/img/photo1.jpg",
-        likes: 350,
-        content: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
-        timestamp: "2024-12-06 10:20",
-    },
-    {
-        id: 2,
-        username: "john_doe",
-        university: "University of Montclair",
-        image: "/img/photo1.jpg",
-        likes: 350,
-        content: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
-        timestamp: "2024-12-06 10:20",
-    },
-    {
-        id: 3,
-        username: "john_doe",
-        university: "University of Montclair",
-        image: "/img/photo1.jpg",
-        likes: 350,
-        content: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
-        timestamp: "2024-12-06 10:20",
-    },
-];
+import { useUser } from "@/context/userContext";
+import { getAllPosts } from "@/services/postServices";
+import { PostInterface } from "@/interfaces/postInterfaces";
 
 const HomeScreen: React.FC = () => {
+    const { user, setUser } = useUser();
     const [isDialogVisible, setIsDialogVisible] = useState(false);
     const [likedPosts, setLikedPosts] = useState<number[]>([]);
+    const [posts, setPosts] = useState<PostInterface[]>([]);
+
+    useEffect(() => {
+        const fetchPosts = async () => {
+            try {
+                const fetchedPosts = await getAllPosts();
+                setPosts(fetchedPosts);
+            } catch (error) {
+                console.error("Error fetching posts:", error);
+            }
+        };
+
+        fetchPosts();
+    }, []);
 
     const toggleLike = (postId: number) => {
         setLikedPosts((prevLikedPosts) =>
@@ -83,21 +61,21 @@ const HomeScreen: React.FC = () => {
                         key={post.id}
                         className="bg-gray-800 bg-opacity-60 p-4 rounded-lg shadow-md w-full"
                     >
-                        <div className="flex items-center space-x-4 mb-4">
+                        {/* <div className="flex items-center space-x-4 mb-4">
                             <div className="w-10 h-10 bg-gray-500 rounded-full" />
                             <div>
                                 <p className="font-bold">{post.username}</p>
                                 <p className="text-sm text-gray-300">{post.university}</p>
                             </div>
-                        </div>
-                        <Image
+                        </div> */}
+                        {/* <Image
                             src={post.image}
                             alt="Post"
                             className="rounded-lg"
                             width={600}
                             height={256}
-                        />
-                        <p className="text-sm text-gray-200 mt-4">{post.content}</p>
+                        /> */}
+                        {/* <p className="text-sm text-gray-200 mt-4">{post.content}</p> */}
                         <div className="flex justify-between items-center text-sm text-gray-400 mt-4">
                             <div
                                 onClick={() => toggleLike(post.id)}
@@ -108,9 +86,9 @@ const HomeScreen: React.FC = () => {
                                 ) : (
                                     <FaRegHeart />
                                 )}
-                                <span>{post.likes}</span>
+                                {/* <span>{post.likes}</span> */}
                             </div>
-                            <p>{post.timestamp}</p>
+                            {/* <p>{post.timestamp}</p> */}
                         </div>
                     </div>
                 ))}

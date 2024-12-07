@@ -65,11 +65,6 @@ const Signin: React.FC = () => {
         finally {
             setLoading(false);
         }
-        // call authentication service functions
-
-        // Show toasts if unsuccessful
-
-        // Navigate to posts page if successful
     };
 
     return (
