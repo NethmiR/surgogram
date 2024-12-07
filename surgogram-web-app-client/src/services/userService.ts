@@ -43,3 +43,13 @@ export const updateUser = async (
     throw error;
   }
 };
+
+export const getUserById = async (userId: number): Promise<UserInterface> => {
+  try {
+    const response = await axiosInstance.get(`${BASE_URL}/user/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    throw error;
+  }
+};

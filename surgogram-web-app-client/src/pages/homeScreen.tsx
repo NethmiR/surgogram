@@ -13,7 +13,7 @@ import {
   GetAllPostsPaginatedInterface,
 } from "@/interfaces/postInterfaces";
 import { toast } from "react-toastify";
-import PostCard from "@/components/PostCard"; // Import the new PostCard component
+import PostCard from "@/components/PostCard";
 import Toast from "@/components/Toast";
 import Spinner from "@/components/Spinner";
 import { useUser } from "@/context/userContext";
@@ -26,7 +26,8 @@ const HomeScreen: React.FC = () => {
   const router = useRouter();
 
   const { user } = useUser();
-  const limit = 10;
+  const currentPage = 1;
+  const limit = 100;
 
   useEffect(() => {
     fetchPosts();
@@ -41,8 +42,8 @@ const HomeScreen: React.FC = () => {
 
       setLoading(true);
       const fetchedPosts: GetAllPostsPaginatedInterface = await getAllPosts(
-        1,
-        10,
+        currentPage,
+        limit,
         user.id
       );
       const postsData = fetchedPosts.posts.map((postData) => postData);

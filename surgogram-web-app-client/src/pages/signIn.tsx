@@ -6,16 +6,9 @@ import Spinner from "@/components/Spinner";
 import Toast from "@/components/Toast";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
-import {
-  LoginResponseInterface,
-  UserInterface,
-} from "@/interfaces/userInterface";
 import { loginUser } from "@/services/authServices";
 import { useUser } from "@/context/userContext";
-import { isTokenExpiredFunction } from "@/utils/authUtils";
 import {
-  UnauthorizedException,
-  ForbiddenException,
   BadRequestException,
   InternalServerException,
   UnexpectedException,
@@ -25,10 +18,10 @@ import {
 
 const Signin: React.FC = () => {
   const [loading, setLoading] = useState(false);
-  const { user, setUser } = useUser();
+  const { setUser } = useUser();
 
-  const [email, setEmail] = useState("dennissimmons1985@gmail.com");
-  const [password, setPassword] = useState("12345678");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const router = useRouter();
 
@@ -136,7 +129,7 @@ const Signin: React.FC = () => {
             />
             <Link href="/signUp">
               <div className="mb-4 mt-2 text-white text-sm hover:text-red duration-300 transition-all ease-in-out cursor-pointer">
-                Don't have an account? Sign Up
+                Do not have an account? Sign Up
               </div>
             </Link>
           </div>

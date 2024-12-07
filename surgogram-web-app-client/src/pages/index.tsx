@@ -1,7 +1,12 @@
+import LoadingScreen from "@/components/LoadingScreen";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 export default function Home() {
-  return (
-    <div className="bg-blue-500 h-screen flex items-center justify-center">
-      <h1 className="text-red-500 text-4xl font-bold">Hello World</h1>
-    </div>
-  );
+  const router = useRouter();
+
+  useEffect(() => {
+    router.push("/homeScreen");
+  }, []);
+
+  return <LoadingScreen />;
 }
