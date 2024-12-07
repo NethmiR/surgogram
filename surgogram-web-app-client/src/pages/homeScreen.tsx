@@ -61,21 +61,21 @@ const HomeScreen: React.FC = () => {
                         key={post.id}
                         className="bg-gray-800 bg-opacity-60 p-4 rounded-lg shadow-md w-full"
                     >
-                        {/* <div className="flex items-center space-x-4 mb-4">
+                        <div className="flex items-center space-x-4 mb-4">
                             <div className="w-10 h-10 bg-gray-500 rounded-full" />
                             <div>
                                 <p className="font-bold">{post.username}</p>
                                 <p className="text-sm text-gray-300">{post.university}</p>
                             </div>
-                        </div> */}
-                        {/* <Image
+                        </div>
+                        <Image
                             src={post.image}
                             alt="Post"
                             className="rounded-lg"
                             width={600}
                             height={256}
-                        /> */}
-                        {/* <p className="text-sm text-gray-200 mt-4">{post.content}</p> */}
+                        />
+                        <p className="text-sm text-gray-200 mt-4">{post.content}</p>
                         <div className="flex justify-between items-center text-sm text-gray-400 mt-4">
                             <div
                                 onClick={() => toggleLike(post.id)}
@@ -86,9 +86,9 @@ const HomeScreen: React.FC = () => {
                                 ) : (
                                     <FaRegHeart />
                                 )}
-                                {/* <span>{post.likes}</span> */}
+                                <span>{post.likes}</span>
                             </div>
-                            {/* <p>{post.timestamp}</p> */}
+                            <p>{post.timestamp}</p>
                         </div>
                     </div>
                 ))}
