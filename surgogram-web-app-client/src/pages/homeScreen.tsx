@@ -1,53 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Image from "next/image";
 import DialogContent from "@/components/DialogContent";
 import DialogLayout from "@/components/DialogLayout";
 import { FaHeart } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa";
-
-type Post = {
-    id: number;
-    username: string;
-    university: string;
-    image: string;
-    likes: number;
-    content: string;
-    timestamp: string;
-};
-
-const posts: Post[] = [
-    {
-        id: 1,
-        username: "john_doe",
-        university: "University of Montclair",
-        image: "/img/photo1.jpg",
-        likes: 350,
-        content: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
-        timestamp: "2024-12-06 10:20",
-    },
-    {
-        id: 2,
-        username: "john_doe",
-        university: "University of Montclair",
-        image: "/img/photo1.jpg",
-        likes: 350,
-        content: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
-        timestamp: "2024-12-06 10:20",
-    },
-    {
-        id: 3,
-        username: "john_doe",
-        university: "University of Montclair",
-        image: "/img/photo1.jpg",
-        likes: 350,
-        content: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
-        timestamp: "2024-12-06 10:20",
-    },
-];
+import { useUser } from "@/context/userContext";
+import { getAllPosts, createPost } from "@/services/postServices";
+import { PostInterface, GetPostInterface, CreatePostInterface, GetAllPostsPaginatedInterface } from "@/interfaces/postInterfaces";
 
 const HomeScreen: React.FC = () => {
+    const { user, setUser } = useUser();
     const [isDialogVisible, setIsDialogVisible] = useState(false);
     const [likedPosts, setLikedPosts] = useState<number[]>([]);
+    const [posts, setPosts] = useState<GetPostInterface[]>([]);
+
+    useEffect(() => {
+        const fetchPosts = async () => {
+            try {
+                const fetchedPosts: GetAllPostsPaginatedInterface = await getAllPosts();
+                const postsData = fetchedPosts.posts.map((postData) => postData);
+                setPosts(postsData);
+            } catch (error) {
+                console.error("Error fetching posts:", error);
+            }
+        };
+
+        if (user) {
+            fetchPosts();
+        }
+    }, [user]);
 
     const toggleLike = (postId: number) => {
         setLikedPosts((prevLikedPosts) =>
@@ -55,6 +36,17 @@ const HomeScreen: React.FC = () => {
                 ? prevLikedPosts.filter((id) => id !== postId)
                 : [...prevLikedPosts, postId]
         );
+    };
+
+    const handleCreatePost = async (postData: CreatePostInterface) => {
+        try {
+            await createPost(postData);
+            const fetchedPosts: GetAllPostsPaginatedInterface = await getAllPosts();
+            const postsData = fetchedPosts.posts.map((postData) => postData);
+            setPosts(postsData);
+        } catch (error) {
+            console.error("Error creating post:", error);
+        }
     };
 
     return (
@@ -86,18 +78,18 @@ const HomeScreen: React.FC = () => {
                         <div className="flex items-center space-x-4 mb-4">
                             <div className="w-10 h-10 bg-gray-500 rounded-full" />
                             <div>
-                                <p className="font-bold">{post.username}</p>
-                                <p className="text-sm text-gray-300">{post.university}</p>
+                                <p className="font-bold">{post.user.userName}</p>
+                                <p className="text-sm text-gray-300">{post.location}</p>
                             </div>
                         </div>
                         <Image
-                            src={post.image}
+                            src={post.URL}
                             alt="Post"
                             className="rounded-lg"
                             width={600}
                             height={256}
                         />
-                        <p className="text-sm text-gray-200 mt-4">{post.content}</p>
+                        <p className="text-sm text-gray-200 mt-4">{post.description}</p>
                         <div className="flex justify-between items-center text-sm text-gray-400 mt-4">
                             <div
                                 onClick={() => toggleLike(post.id)}
@@ -108,9 +100,9 @@ const HomeScreen: React.FC = () => {
                                 ) : (
                                     <FaRegHeart />
                                 )}
-                                <span>{post.likes}</span>
+                                <span>{post.noOfLikes}</span>
                             </div>
-                            <p>{post.timestamp}</p>
+                            <p>{post.createdAt}</p>
                         </div>
                     </div>
                 ))}
@@ -118,7 +110,7 @@ const HomeScreen: React.FC = () => {
 
             {/* Dialog for Creating Post */}
             <DialogLayout isVisible={isDialogVisible}>
-                <DialogContent onClose={() => setIsDialogVisible(false)} />
+                <DialogContent onClose={() => setIsDialogVisible(false)} onCreatePost={handleCreatePost} />
             </DialogLayout>
         </div>
     );

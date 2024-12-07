@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import Link from "next/link";
 import TextBox from "@/components/TextBox";
@@ -8,25 +7,56 @@ import Spinner from "@/components/Spinner";
 import Toast from "@/components/Toast";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
+import { useUser } from "@/context/userContext";
+import { UpdateUserInterface } from "@/interfaces/userInterface";
+import { updateUser } from "@/services/userService";
 
 const UserDetails: React.FC = () => {
+
+    const { user, setUser } = useUser();
     const [loading, setLoading] = useState(false);
     const [userName, setUserName] = useState("");
+    const [fullName, setFullName] = useState("");
     const [file, setFile] = useState<File | null>(null);
     const [currentImage, setCurrentImage] = useState<string | null>(null);
 
+
     const router = useRouter();
+
+    React.useEffect(() => {
+        if (!user || !user.id) {
+            toast.error("User ID not found");
+            router.push("/signUp");
+        }
+    }, [user, router]);
 
     const handleGoAhead = async () => {
         // Validate inputs
+        if (!userName || !file || !fullName) {
+            toast.error("Please fill in all required fields");
+            return;
+        }
 
         setLoading(true);
 
-        // call service functions
+        const userData: UpdateUserInterface = {
+            fullName,
+            userName,
+            imageFile: file,
+        };
 
-        // Show toasts if unsuccessful
-
-        // Navigate to next page if successful
+        try {
+            if (user && user.id) {
+                const updatedUser = await updateUser(userData, user.id);
+                setUser(updatedUser);
+                toast.success("User updated successfully");
+                router.push("/signIn");
+            }
+        } catch (error) {
+            toast.error("Failed to update user");
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -57,6 +87,14 @@ const UserDetails: React.FC = () => {
                         type="text"
                         placeholder="Enter your username"
                         onChange={(e) => setUserName(e)}
+                        captionClassName="text-center"
+                    />
+                    <TextBox
+                        caption="Full Name"
+                        value={fullName}
+                        type="text"
+                        placeholder="Enter your full name"
+                        onChange={(e) => setFullName(e)}
                         captionClassName="text-center"
                     />
                     <SingleImageUpload

@@ -1,10 +1,11 @@
-const { Post } = require('../models');
+const { Post, User } = require('../models');
 const { uploadImage } = require('../storageService');
 const { userExists } = require('./userService');
 
 async function getAllPosts(page = 1, pageSize = 10) {
     const offset = (page - 1) * pageSize;
     return await Post.findAll({
+        include: [{ model: User, as: 'user' }],
         order: [
             ['noOfLikes', 'DESC'],
             ['createdAt', 'DESC']
@@ -40,7 +41,7 @@ exports.getAllPosts = async (page, pageSize) => {
     try {
         return await getAllPosts(page, pageSize);
     } catch (error) {
-        throw new Error(error.message || 'An error occurred while fetching user gallery');
+        throw new Error(error.message || 'An error occurred while fetching posts');
     }
 };
 
@@ -68,6 +69,8 @@ exports.createPost = async (postData) => {
         throw new Error(error.message || 'An error occurred while creating the post');
     }
 }
+
+// ...existing code...
 
 exports.patchPost = async (postId) => {
     const transaction = await Post.sequelize.transaction();

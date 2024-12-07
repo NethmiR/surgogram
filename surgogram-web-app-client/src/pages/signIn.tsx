@@ -6,29 +6,65 @@ import Spinner from "@/components/Spinner";
 import Toast from "@/components/Toast";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
+import { LoginResponseInterface, UserInterface } from "@/interfaces/userInterface";
+import { loginUser } from "@/services/authServices";
+import { useUser } from "@/context/userContext";
+import { isTokenExpiredFunction } from "@/utils/authUtils";
 
 const Signin: React.FC = () => {
     const [loading, setLoading] = useState(false);
+    const { user, setUser } = useUser();
 
     const [email, setEmail] = useState("rathnayakenethmiit@gmail.com");
     const [password, setPassword] = useState("NethmiR123");
 
     const router = useRouter();
 
+    //if already logged in then gets direct to home screen
+    React.useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (user && user.id && token && !isTokenExpiredFunction(token)) {
+            router.push("/homeScreen");
+        }
+        if (user && user.email) {
+            setEmail(user.email);
+        }
+    }, [user, router]);
+
     useEffect(() => {
-        // Remove token
+        // Remove token whenever user visits 
+        localStorage.removeItem("token");
     }, []);
 
     const handleSignIn = async () => {
         // Validate inputs
+        if (!email || !password) {
+            toast.error("Please fill all the fields");
+            return;
+        }
+
+        const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/;
+        if (!emailRegex.test(email)) {
+            toast.error("Enter a valid email");
+            setEmail("");
+            return;
+        }
 
         setLoading(true);
 
-        // call authentication service functions
-
-        // Show toasts if unsuccessful
-
-        // Navigate to posts page if successful
+        try {
+            const updatedUser = await loginUser(email, password);
+            localStorage.setItem("token", updatedUser.token);
+            setUser(updatedUser.user);
+            toast.success("Sign in successful");
+            router.push("/homeScreen");
+        }
+        catch (error) {
+            toast.error((error as Error).message);
+        }
+        finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -76,7 +112,7 @@ const Signin: React.FC = () => {
                     </Link>
                     <div className="flex flex-col items-center justify-center mt-4">
                         <Button caption="SIGN IN" onClick={handleSignIn} width="w-full" background="bg-red-500" />
-                        <Link href="/admin/auth/forgotpassword">
+                        <Link href="/singUp">
                             <div className="mb-4 mt-2 text-white text-sm hover:text-red duration-300 transition-all ease-in-out cursor-pointer">
                                 Don't have an account? Sign Up
                             </div>
