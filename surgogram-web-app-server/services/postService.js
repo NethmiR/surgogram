@@ -1,5 +1,5 @@
 const Post = require('../models/Post');
-const User = require('../models/User'); // Add this line to import the User model
+const User = require('../models/User'); 
 const { uploadImage } = require('./storageService');
 const { userExists } = require('./userService');
 
@@ -46,7 +46,7 @@ async function validatePostData(postData, imageFile) {
 exports.createPost = async (postData, imageFile) => {
     try {
         await validatePostData(postData, imageFile);
-
+      
         const { description, location, userId } = postData;
 
         // Getting the image URL
@@ -65,6 +65,8 @@ exports.createPost = async (postData, imageFile) => {
         throw new Error(error.message || 'An error occurred while creating the post');
     }
 }
+
+// ...existing code...
 
 exports.patchPost = async (postId) => {
     const transaction = await Post.sequelize.transaction();
