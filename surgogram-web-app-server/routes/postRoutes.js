@@ -4,8 +4,7 @@ const router = express.Router();
 
 // routers
 router.post('/', postController.createPost);
-router.put('/:id', postController.updatePost);
+router.patch('/:id', postController.patchPost);
 router.get('/', postController.getAllPosts);
-// router.delete('/posts/:id', postController.deletePost);
 
 module.exports = router;

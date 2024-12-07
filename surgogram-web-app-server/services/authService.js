@@ -1,19 +1,32 @@
-const { User } = require('../models');
-const { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, confirmPasswordReset } = require('../../firebase');
+const User = require('../models/User');
+const { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, confirmPasswordReset } = require('./../firebase');
 const jwt = require('jsonwebtoken');
+const JWT_SECRET = 'your_jwt_secret';
 
 exports.login = async (email, password) => {
     try {
         const userCredential = await signInWithEmailAndPassword(getAuth(), email, password);
         const user = await User.findOne({ where: { email } });
         if (!user) {
-            throw new Error('User not found');
+            throw new Error('User not found in the database');
         }
-        const token = jwt.sign({ id: user.id, email: user.email }, 'your_jwt_secret', { expiresIn: '12h' });
+
+        // Check email is verified
+        if (!userCredential.user.emailVerified) {
+            throw new Error('Email not verified');
+        }
+
+        const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '12h' });
 
         return { token, user };
     } catch (error) {
-        throw new Error(error.message || 'An error occurred during login');
+        if (error.code === 'auth/user-not-found') {
+            throw new Error('Email not found');
+        } else if (error.code === 'auth/wrong-password') {
+            throw new Error('Incorrect password');
+        } else {
+            throw new Error(error.message || 'An error occurred during login');
+        }
     }
 };
 
@@ -27,12 +40,3 @@ exports.sendPasswordReset = async (email) => {
     }
 };
 
-exports.confirmPasswordReset = async (code, newPassword) => {
-    try {
-        const auth = getAuth();
-        await confirmPasswordReset(auth, code, newPassword);
-        return { message: 'Password has been reset.' };
-    } catch (error) {
-        throw new Error(error.message || 'An error occurred while confirming password reset');
-    }
-};

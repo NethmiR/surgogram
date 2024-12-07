@@ -20,12 +20,3 @@ exports.sendPasswordReset = async (req, res) => {
     }
 };
 
-exports.confirmPasswordReset = async (req, res) => {
-    try {
-        const { code, newPassword } = req.body;
-        const result = await authService.confirmPasswordReset(code, newPassword);
-        res.status(200).json(result);
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-};
