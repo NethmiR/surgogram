@@ -1,6 +1,6 @@
 import axiosInstance from "@/utils/axiosInstance";
 import axios from "axios";
-import { CreatePostInterface, PostInterface } from "@/interfaces/postInterfaces";
+import { CreatePostInterface, PostInterface, GetPostInterface } from "@/interfaces/postInterfaces";
 import {
     BadRequestException,
     InternalServerException,
@@ -32,7 +32,7 @@ export const createPost = async (
     }
 }
 
-export const getAllPosts = async (): Promise<PostInterface[]> => {
+export const getAllPosts = async (): Promise<GetPostInterface[]> => {
     try {
         const response = await axiosInstance.get(`${BASE_URL}/post/`);
         return response.data;

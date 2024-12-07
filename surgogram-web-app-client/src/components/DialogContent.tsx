@@ -3,15 +3,30 @@ import Button from "@/components/Button";
 import SingleImageUpload from "@/components/SingleImageUpload";
 import TextArea from "@/components/TextArea";
 import TextBox from "@/components/TextBox";
+import { CreatePostInterface } from "@/interfaces/postInterfaces";
 
 interface DialogContentProps {
     onClose: () => void;
+    onCreatePost: (postData: CreatePostInterface) => void;
 }
 
-const DialogContent: React.FC<DialogContentProps> = ({ onClose }) => {
+const DialogContent: React.FC<DialogContentProps> = ({ onClose, onCreatePost }) => {
     const [file, setFile] = React.useState<File | null>(null);
     const [caption, setCaption] = React.useState<string>("");
     const [location, setLocation] = React.useState<string>("");
+
+    const handleSubmit = () => {
+        if (file && caption && location) {
+            const postData: CreatePostInterface = {
+                imageFile: file,
+                description: caption,
+                location: location,
+                userId: 1 // Replace with actual user ID
+            };
+            onCreatePost(postData);
+            onClose();
+        }
+    };
 
     return (
         <div className="bg-gray-900 text-white p-6 rounded-lg w-full max-w-md mx-auto">
@@ -61,7 +76,7 @@ const DialogContent: React.FC<DialogContentProps> = ({ onClose }) => {
                 />
                 <Button
                     caption="Create Post"
-                    onClick={() => console.log({ file, caption, location })} // Add form submission logic here
+                    onClick={handleSubmit}
                     background="bg-red-500 hover:bg-red-600"
 
                 />

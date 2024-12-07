@@ -5,8 +5,8 @@ import DialogLayout from "@/components/DialogLayout";
 import { FaHeart } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa";
 import { useUser } from "@/context/userContext";
-import { getAllPosts } from "@/services/postServices";
-import { PostInterface } from "@/interfaces/postInterfaces";
+import { getAllPosts, createPost } from "@/services/postServices";
+import { PostInterface, GetPostInterface, CreatePostInterface } from "@/interfaces/postInterfaces";
 
 const HomeScreen: React.FC = () => {
     const { user, setUser } = useUser();
@@ -17,15 +17,18 @@ const HomeScreen: React.FC = () => {
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                const fetchedPosts = await getAllPosts();
-                setPosts(fetchedPosts);
+                const fetchedPosts: GetPostInterface[] = await getAllPosts();
+                const postsData = fetchedPosts.map((postData) => postData.post);
+                setPosts(postsData);
             } catch (error) {
                 console.error("Error fetching posts:", error);
             }
         };
 
-        fetchPosts();
-    }, []);
+        if (user) {
+            fetchPosts();
+        }
+    }, [user]);
 
     const toggleLike = (postId: number) => {
         setLikedPosts((prevLikedPosts) =>
@@ -33,6 +36,17 @@ const HomeScreen: React.FC = () => {
                 ? prevLikedPosts.filter((id) => id !== postId)
                 : [...prevLikedPosts, postId]
         );
+    };
+
+    const handleCreatePost = async (postData: CreatePostInterface) => {
+        try {
+            await createPost(postData);
+            const fetchedPosts: GetPostInterface[] = await getAllPosts();
+            const postsData = fetchedPosts.map((postData) => postData.post);
+            setPosts(postsData);
+        } catch (error) {
+            console.error("Error creating post:", error);
+        }
     };
 
     return (
@@ -64,7 +78,7 @@ const HomeScreen: React.FC = () => {
                         <div className="flex items-center space-x-4 mb-4">
                             <div className="w-10 h-10 bg-gray-500 rounded-full" />
                             <div>
-                                <p className="font-bold">{post.username}</p>
+                                <p className="font-bold">{post.userId.}</p>
                                 <p className="text-sm text-gray-300">{post.university}</p>
                             </div>
                         </div>
@@ -96,7 +110,7 @@ const HomeScreen: React.FC = () => {
 
             {/* Dialog for Creating Post */}
             <DialogLayout isVisible={isDialogVisible}>
-                <DialogContent onClose={() => setIsDialogVisible(false)} />
+                <DialogContent onClose={() => setIsDialogVisible(false)} onCreatePost={handleCreatePost} />
             </DialogLayout>
         </div>
     );

@@ -1,3 +1,4 @@
+import { UserInterface } from './userInterface';
 export interface CreatePostInterface {
     imageFile: File;
     description: string;
@@ -14,4 +15,9 @@ export interface PostInterface {
     userId: number;
     createdAt: string;
     updatedAt: string;
+}
+
+export interface GetPostInterface {
+    user: UserInterface;
+    post: PostInterface;
 }
