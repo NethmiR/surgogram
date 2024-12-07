@@ -3,36 +3,18 @@ import { FaUpload } from "react-icons/fa";
 import Button from "./Button";
 import classNames from "classnames";
 
-/**
- * Props for the SingleImageUpload component.
- */
 interface SingleImageUploadProps {
-  /** The name attribute for the file input */
   name: string;
-  /** The currently selected file */
   file: File | null;
-  /** The function to call when a file is selected */
   setFile: (file: File | null) => void;
-  /** The maximum file size in bytes */
   maxFileSize?: number;
-  /** The caption for the file input */
   caption: string;
-  /** Additional class names for the container */
   containerClassName?: string;
-
   currentImage?: string | null;
-  /** The width class for the container */
   width?: string;
-  /** Custom class name for the caption */
   captionClassName?: string;
 }
 
-/**
- * SingleImageUpload component renders an image upload input with a preview.
- *
- * @param {SingleImageUploadProps} props - The props for the SingleImageUpload component.
- * @returns {JSX.Element} The rendered SingleImageUpload component.
- */
 const SingleImageUpload: React.FC<SingleImageUploadProps> = ({
   name = "imageInput",
   file = null,
