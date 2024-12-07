@@ -6,19 +6,19 @@ import { FaHeart } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa";
 import { useUser } from "@/context/userContext";
 import { getAllPosts, createPost } from "@/services/postServices";
-import { PostInterface, GetPostInterface, CreatePostInterface } from "@/interfaces/postInterfaces";
+import { PostInterface, GetPostInterface, CreatePostInterface, GetAllPostsPaginatedInterface } from "@/interfaces/postInterfaces";
 
 const HomeScreen: React.FC = () => {
     const { user, setUser } = useUser();
     const [isDialogVisible, setIsDialogVisible] = useState(false);
     const [likedPosts, setLikedPosts] = useState<number[]>([]);
-    const [posts, setPosts] = useState<PostInterface[]>([]);
+    const [posts, setPosts] = useState<GetPostInterface[]>([]);
 
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                const fetchedPosts: GetPostInterface[] = await getAllPosts();
-                const postsData = fetchedPosts.map((postData) => postData.post);
+                const fetchedPosts: GetAllPostsPaginatedInterface = await getAllPosts();
+                const postsData = fetchedPosts.posts.map((postData) => postData);
                 setPosts(postsData);
             } catch (error) {
                 console.error("Error fetching posts:", error);
@@ -41,8 +41,8 @@ const HomeScreen: React.FC = () => {
     const handleCreatePost = async (postData: CreatePostInterface) => {
         try {
             await createPost(postData);
-            const fetchedPosts: GetPostInterface[] = await getAllPosts();
-            const postsData = fetchedPosts.map((postData) => postData.post);
+            const fetchedPosts: GetAllPostsPaginatedInterface = await getAllPosts();
+            const postsData = fetchedPosts.posts.map((postData) => postData);
             setPosts(postsData);
         } catch (error) {
             console.error("Error creating post:", error);
@@ -78,18 +78,18 @@ const HomeScreen: React.FC = () => {
                         <div className="flex items-center space-x-4 mb-4">
                             <div className="w-10 h-10 bg-gray-500 rounded-full" />
                             <div>
-                                <p className="font-bold">{post.userId.}</p>
-                                <p className="text-sm text-gray-300">{post.university}</p>
+                                <p className="font-bold">{post.user.userName}</p>
+                                <p className="text-sm text-gray-300">{post.location}</p>
                             </div>
                         </div>
                         <Image
-                            src={post.image}
+                            src={post.URL}
                             alt="Post"
                             className="rounded-lg"
                             width={600}
                             height={256}
                         />
-                        <p className="text-sm text-gray-200 mt-4">{post.content}</p>
+                        <p className="text-sm text-gray-200 mt-4">{post.description}</p>
                         <div className="flex justify-between items-center text-sm text-gray-400 mt-4">
                             <div
                                 onClick={() => toggleLike(post.id)}
@@ -100,9 +100,9 @@ const HomeScreen: React.FC = () => {
                                 ) : (
                                     <FaRegHeart />
                                 )}
-                                <span>{post.likes}</span>
+                                <span>{post.noOfLikes}</span>
                             </div>
-                            <p>{post.timestamp}</p>
+                            <p>{post.createdAt}</p>
                         </div>
                     </div>
                 ))}

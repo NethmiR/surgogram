@@ -1,12 +1,5 @@
 import axios from "axios";
 import { LoginResponseInterface } from "@/interfaces/userInterface";
-import {
-    NotFoundException,
-    UnauthorizedException,
-    BadRequestException,
-    InternalServerException,
-    UnexpectedException,
-} from "@/utils/exceptions";
 
 const BASE_URL = process.env.VUE_APP_API_BASE_URL;
 
@@ -22,23 +15,7 @@ export const loginUser = async (
 
         return response.data;
     } catch (error) {
-        if (axios.isAxiosError(error)) {
-            if (error.response) {
-                if (error.response.status === 401) {
-                    throw new UnauthorizedException("Invalid email or password");
-                } else if (error.response.status === 404) {
-                    throw new NotFoundException("User not found");
-                } else if (error.response.status === 400) {
-                    throw new BadRequestException("Enter valid email and password");
-                } else {
-                    throw new UnexpectedException("Unexpected error occurred");
-                }
-            } else {
-                throw new InternalServerException("Internal server error");
-            }
-        } else {
-            throw new UnexpectedException("An unexpected error occurred");
-        }
+        throw error;
     }
 };
 
@@ -50,18 +27,6 @@ export const passwordReset = async (
             email,
         });
     } catch (error) {
-        if (axios.isAxiosError(error)) {
-            if (error.response) {
-                if (error.response.status === 404) {
-                    throw new NotFoundException("User not found");
-                } else {
-                    throw new UnexpectedException("Unexpected error occurred");
-                }
-            } else {
-                throw new InternalServerException("Internal server error");
-            }
-        } else {
-            throw new UnexpectedException("An unexpected error occurred");
-        }
+        throw error;
     }
 }

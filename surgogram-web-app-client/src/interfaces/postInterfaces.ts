@@ -17,7 +17,12 @@ export interface PostInterface {
     updatedAt: string;
 }
 
-export interface GetPostInterface {
+export interface GetPostInterface extends PostInterface {
     user: UserInterface;
-    post: PostInterface;
 }
+
+export interface GetAllPostsPaginatedInterface {
+    totalPosts: number;
+    posts: GetPostInterface[];
+}
+
